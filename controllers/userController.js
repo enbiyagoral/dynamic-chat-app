@@ -33,6 +33,60 @@ const register = async (req,res)=>{
     }
 };
 
+const loadLogin = async (req,res)=>{
+    try {
+        res.render('login');
+
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const login = async (req,res)=>{
+    try {
+        const { email, password } = req.body;
+        const user = await User.findOne({email});
+        if(user){
+            const passwordMatch = bcrypt.compare(password,user.password);
+            if (passwordMatch) {
+                req.session.user = user;
+                res.redirect('/dashboard');
+            }else{
+                res.render(login, { message : 'Email and password is incorrect!'})
+            }
+            
+        }else{
+            res.render(login, { message : 'Email and password is incorrect!'})
+        }
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const logout = async (req,res)=>{
+    try {
+
+        req.session.destroy();
+        res.redirect('/');
+
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const loadDashboard = async (req,res)=>{
+    try {
+        res.render('dashboard',{user:req.session.user})
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
 module.exports = {
-    register,registerLoad
+    register,
+    registerLoad,
+    loadDashboard,
+    logout,
+    login,
+    loadLogin
 }

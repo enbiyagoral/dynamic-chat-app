@@ -17,4 +17,10 @@ const upload = multer({storage: storage})
 router.get('/register',userController.registerLoad)
 router.post('/register', upload.single("image"), userController.register)
 
+router.get('/', userController.loadLogin);
+router.post('/', userController.login);
+router.get('/logout', userController.logout);
+
+router.get('/dashboard', userController.loadDashboard);
+
 module.exports = router
