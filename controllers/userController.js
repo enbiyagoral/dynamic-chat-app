@@ -47,16 +47,16 @@ const login = async (req,res)=>{
         const { email, password } = req.body;
         const user = await User.findOne({email});
         if(user){
-            const passwordMatch = bcrypt.compare(password,user.password);
+            const passwordMatch = await bcrypt.compare(password,user.password);
             if (passwordMatch) {
                 req.session.user = user;
-                res.redirect('/dashboard');
+                return res.redirect('/dashboard');
             }else{
-                res.render(login, { message : 'Email and password is incorrect!'})
+                return res.render(login, { message : 'Email and password is incorrect!'})
             }
             
         }else{
-            res.render(login, { message : 'Email and password is incorrect!'})
+            return res.render(login, { message : 'Email and password is incorrect!'})
         }
     } catch (error) {
         console.log(error.message);
@@ -67,7 +67,7 @@ const logout = async (req,res)=>{
     try {
 
         req.session.destroy();
-        res.redirect('/');
+        return res.redirect('/');
 
     } catch (error) {
         console.log(error.message);
@@ -76,7 +76,7 @@ const logout = async (req,res)=>{
 
 const loadDashboard = async (req,res)=>{
     try {
-        res.render('dashboard',{user:req.session.user})
+        return res.render('dashboard',{user:req.session.user})
     } catch (error) {
         console.log(error.message);
     }
