@@ -35,7 +35,14 @@
 
 
 <script>
-    $(document).ready(function() {
+
+    var socket = io('/user-namespace', {
+        auth: {
+            token: '<%= user._id %>'
+        }
+    })
+    var senderId = '<%= user._id %>'
+        $(document).ready(function() {
         $('.user-list').click(function(){
             $('.start-head').hide();
             $('.chat-section').show();
