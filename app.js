@@ -7,7 +7,10 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const userRoute = require('./routes/userRoute');
 const io = require('socket.io')(http);
+
 const User = require('./models/userModel');
+const Chat = require('./models/chatModel');
+
 // Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
@@ -41,6 +44,16 @@ usp.on('connection', async function(socket){
     socket.on('newChat', function(data){
         socket.broadcast.emit('loadNewChat', data);
     })
+    // Load old chats
+    socket.on('existsChat', async function(data){
+        const chats = await Chat.find({ $or:[
+            {senderId: data.senderId, receiverId: data.receiverId},
+            {senderId: data.receiverId, receiverId: data.senderId},
+        ]});
+
+        socket.emit('loadChats', { chats:chats });
+    })
+
 })
 
 mongoose.connect(process.env.mongoURI)

@@ -44,14 +44,17 @@
     });
     var senderId = '<%= user._id %>';
     var receiverId;
+
     $(document).ready(function() {
         $('.user-list').click(function() {
             var userId = $(this).attr('data-id');
-            receiverId = userId;
+            receiverId = userId; // receiverId'yi güncelliyoruz
             $('.start-head').hide();
             $('.chat-section').show();
+            socket.emit('existsChat', { senderId: senderId, receiverId: receiverId });
         });
     });
+
 
     // update user online -status
     socket.on('getOnlineUser', function(data){
@@ -71,7 +74,6 @@
     $("#chat-form").submit(function(e){
         e.preventDefault();
         var message = $('#message').val();
-
         $.ajax({
             url: '/save-chat',
             type: 'POST',
@@ -84,7 +86,7 @@
                     <div class="current-user-chat">
                         <h5>${chat}</h5>    
                     </div>`;
-                    $('#chat-container').append(html);     
+                    $('#chat-container').append(html); 
                     socket.emit('newChat', response.data)
                 }else{
                     alert(data.msg);
@@ -96,15 +98,36 @@
     });
 
     socket.on('loadNewChat', function(data){
-        if(senderId === data.senderId && receiverId === data.receiverId){
+        if(senderId == data.receiverId && receiverId == data.senderId){
             let html = `
             <div class="distance-user-chat">
                 <h5>${data.message}</h5>    
             </div>`;
         $('#chat-container').append(html);   
-        }      
+        }
     });
 
+    // load old chats 
+    socket.on('loadChats', function(data){
+        $('#chat-container').html('');
+        var chats = data.chats;
+        let html = "";
+
+        for(let x=0; x < chats.length; x++){
+            let addClass = '';
+            if(chats[x].senderId == senderId){
+                addClass = 'current-user-chat';
+            }else{
+                addClass = 'distance-user-chat';
+            }
+
+            html +=` 
+            <div class="${addClass}">
+                <h5>${chats[x].message}</h5>    
+            </div>`;
+        };
+        $('#chat-container').append(html);
+    })
 
 </script>
 
