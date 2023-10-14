@@ -33,7 +33,14 @@ usp.on('connection', async function(socket){
         await User.findByIdAndUpdate({_id:userId}, { $set:{ isOnline: '0'}});
         // user boradcast online status
         socket.broadcast.emit('getOfflineUser', {user_id:userId})
+
+        // 
     });
+
+    // chatting implementation
+    socket.on('newChat', function(data){
+        socket.broadcast.emit('loadNewChat', data);
+    })
 })
 
 mongoose.connect(process.env.mongoURI)

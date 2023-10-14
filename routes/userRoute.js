@@ -21,7 +21,9 @@ router.post('/register', upload.single("image"), userController.register)
 router.get('/', isLogout ,userController.loadLogin);
 router.post('/', userController.login);
 router.get('/logout', isLogin, userController.logout);
-
 router.get('/dashboard', isLogin, userController.loadDashboard);
+
+router.post('/save-chat', userController.saveChat);
+
 
 module.exports = router
