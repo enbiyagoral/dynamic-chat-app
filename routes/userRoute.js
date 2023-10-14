@@ -25,6 +25,7 @@ router.get('/dashboard', isLogin, userController.loadDashboard);
 
 router.post('/save-chat', userController.saveChat);
 router.post('/delete-chat', userController.deleteChat);
+router.post('/update-chat', userController.updateChat);
 
 
 module.exports = router

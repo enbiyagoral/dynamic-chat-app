@@ -37,7 +37,6 @@
 </div>
 
 
-
 <div class="modal fade" id="deleteChatModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -62,7 +61,30 @@
   </div>
 </div>
 
+<div class="modal fade" id="editChatModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Edit Chat</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
 
+      <form id="update-chat-form">
+        <div class="modal-body">
+            <input type="hidden" name="id" id="edit-message-id">
+            <input type="text" name="message" id="update-message" required placeholder="Enter message">
+            
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Update</button>
+        </div>
+    </form>
+    </div>
+  </div>
+</div>
 
 <script>
     var socket = io('/user-namespace', {
@@ -112,9 +134,10 @@
                     let chat = response.data.message;
                     let html = `
                     <div class="current-user-chat id="${response.data._id}"">
-                        <h5>${chat}
+                        <h5><span>${chat}</span>
                             <i class="fa fa-trash" aria-hidden="true" data-id='${response.data._id}' data-toggle="modal" data-target="#deleteChatModal"></i>
-                        </h5>    
+                            <i class="fa fa-edit" aria-hidden="true" data-id='${response.data._id}' data-msg="${chat}" data-toggle="modal" data-target="#editChatModal"></i>
+                            </h5>    
                     </div>`;
                     $('#chat-container').append(html); 
                     socket.emit('newChat', response.data);
@@ -159,10 +182,13 @@
 
             html +=` 
             <div class="${addClass}" id="${chats[x]._id}">
-                <h5>${chats[x].message}`;
+                <h5><span>${chats[x].message}</span>`;
 
             if(chats[x].senderId == senderId){
-                html += `<i class="fa fa-trash" aria-hidden="true" data-id="${chats[x]._id}" data-toggle="modal" data-target="#deleteChatModal"></i>`;
+                html += `
+                <i class="fa fa-trash" aria-hidden="true" data-id="${chats[x]._id}" data-toggle="modal" data-target="#deleteChatModal"></i>
+                <i class="fa fa-edit" aria-hidden="true" data-id="${chats[x]._id}" data-msg="${chats[x].message}" data-toggle="modal" data-target="#editChatModal"></i>
+                `;
             }     
 
             html +=   ` </h5>    
@@ -209,6 +235,37 @@
 
     socket.on('chatMessageDeleted', function(id){
         $('#'+id).remove();
+    });
+
+    $(document).on("click", '.fa-edit', function(){
+        $('#edit-message-id').val($(this).attr('data-id'));
+        $('#update-message').val($(this).attr('data-msg'));
+    })
+
+    $('#update-chat-form').submit(function(event){
+        event.preventDefault();
+        var id = $('#edit-message-id').val();
+        var msg = $('#update-message').val();
+        console.log(msg);
+        $.ajax({
+            url: '/update-chat',
+            type: 'POST',
+            data: {id: id,message: msg},
+            success: function(res){
+                if(res.success = true){
+                    $('#editChatModal').modal('hide');
+                    $('#'+id).find('span').text(msg);
+                    $('#'+id).find('.fa-edit').attr('data-msg',msg);
+                    socket.emit('chatUpdated',{id:id,message:msg});
+                }else{
+                    alert(res.msg);
+                }
+            }
+        })
+    });
+
+    socket.on('chatMessageUpdated', function(data){
+        $('#'+data.id).find('span').text(data.message);
     })
 
 </script>

@@ -59,6 +59,10 @@ usp.on('connection', async function(socket){
         socket.broadcast.emit('chatMessageDeleted',id);
     })
 
+    socket.on('chatUpdated', function(data){
+        socket.broadcast.emit('chatMessageUpdated',data);
+    })
+
 })
 
 mongoose.connect(process.env.mongoURI)
