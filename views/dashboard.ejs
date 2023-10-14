@@ -87,7 +87,9 @@
                         <h5>${chat}</h5>    
                     </div>`;
                     $('#chat-container').append(html); 
-                    socket.emit('newChat', response.data)
+                    socket.emit('newChat', response.data);
+                    scrollChat();
+
                 }else{
                     alert(data.msg);
                 }
@@ -104,6 +106,7 @@
                 <h5>${data.message}</h5>    
             </div>`;
         $('#chat-container').append(html);   
+        scrollChat();
         }
     });
 
@@ -127,7 +130,14 @@
             </div>`;
         };
         $('#chat-container').append(html);
+        scrollChat();
     })
+
+    function scrollChat(){
+        $('#chat-container').animate({
+            scrollTop: $('#chat-container').offset().top + $('#chat-container')[0].scrollHeight
+        },0)
+    }
 
 </script>
 
