@@ -29,5 +29,6 @@ router.post('/update-chat', userController.updateChat);
 
 router.get('/groups', isLogin, userController.loadGroups);
 router.post('/groups', upload.single("image"), userController.createGroup);
+router.get('/get-members', isLogin, userController.getMembers);
 
 module.exports = router
