@@ -124,7 +124,8 @@ const updateChat = async (req,res)=>{
 
 const loadGroups = async(req,res)=>{
     try {
-        res.render('group');
+        const groups = await Group.find({creatorId : req.session.user._id});
+        res.render('group', { groups });
     } catch (error) {
         res.status(400).send({success: false, msg:error.message});
     }
@@ -134,7 +135,7 @@ const createGroup = async(req,res)=>{
     try {
         const {name, limit } = req.body;
         const file = req.file;
-
+        console.log(req.session.user);
         const group = new Group({
             creatorId: req.session.user,
             name,
@@ -143,7 +144,9 @@ const createGroup = async(req,res)=>{
         });
 
         await group.save();
-        res.render('group', {message: name+' Group created Succesfully'});
+        const groups = await Group.find({creatorId : req.session.user});
+
+        res.render('group', {message: name+' Group created Succesfully', groups});
     } catch (error) {
         res.status(400).send({success: false, msg:error.message});
     }
