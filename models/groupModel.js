@@ -19,6 +19,6 @@ const groupSchema = mongoose.Schema({
     }
 },{timestamps:true});
 
-const chatModel = mongoose.model('Group',groupSchema);
+const groupModel = mongoose.model('Group',groupSchema);
 
-module.exports = chatModel;
+module.exports = groupModel;

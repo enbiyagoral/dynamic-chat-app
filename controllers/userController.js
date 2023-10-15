@@ -1,6 +1,8 @@
 const User = require('../models/userModel');
 const Chat = require('../models/chatModel');
 const Group = require('../models/groupModel');
+const Member = require('../models/memberModel');
+
 const bcrypt = require('bcrypt');
 
 const registerLoad = async (req,res)=>{
@@ -161,6 +163,33 @@ const getMembers = async(req,res)=>{
     }
 }
 
+const addMembers = async(req,res)=>{
+    try {
+        var {members, limit, group_Id} = req.body;
+        console.log(members);
+        if(members === undefined){
+            res.status(200).send({success: false, msg: 'Please select any one Member'});
+        }else if(members.length> parseInt(limit)){
+            res.status(200).send({success: false, msg: 'You can not select more than ', limit});
+        }else{
+            await Member.deleteMany({groupId:group_Id});
+            
+            var data = [];
+            for (let i=0; i<members.length; i++){
+                data.push({
+                    groupId: group_Id,
+                    userId: members[i],
+                });
+            }
+
+            await Member.insertMany(data);
+            
+            res.status(200).send({success: true, msg: 'Members added succesfully'});
+        }
+    } catch (error) {
+        res.status(400).send({success: false, msg:error.message});
+    }
+}
 
 module.exports = {
     register,
@@ -174,5 +203,6 @@ module.exports = {
     updateChat,
     loadGroups,
     createGroup,
-    getMembers
+    getMembers,
+    addMembers
 }
