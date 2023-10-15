@@ -17,7 +17,6 @@ const register = async (req,res)=>{
     try {
         const {name, email, password} = req.body;
         const file = req.file;
-        console.log(file);
         const passwordHash = await bcrypt.hash(password,10);
 
         const user = new User({
@@ -137,7 +136,6 @@ const createGroup = async(req,res)=>{
     try {
         const {name, limit } = req.body;
         const file = req.file;
-        console.log(req.session.user);
         const group = new Group({
             creatorId: req.session.user,
             name,
@@ -220,6 +218,41 @@ const addMembers = async(req,res)=>{
     }
 }
 
+const updateChatGroup = async(req,res)=>{
+    try {
+        const {limit, name, groupId,lastLimit} = req.body;
+        const file = req.file;
+
+        if(parseInt(limit)<parseInt(lastLimit)){
+            await Member.deleteMany({groupId});
+        };
+
+        var updateObj;
+        if(file !== undefined){
+            updateObj = {
+                name,
+                limit,
+                image: 'images/'+ file.filename,
+            };
+        }else{
+            updateObj = {
+                name,
+                limit
+            };
+        };
+
+        await Group.findByIdAndUpdate({_id:groupId},{
+            $set: updateObj
+        });
+
+
+        res.status(200).send({success:true, msg: 'Chat Groups Updated succesfully'});
+    } catch (error) {
+        res.status(400).send({success: false, msg:error.message});
+    }
+}
+
+
 module.exports = {
     register,
     registerLoad,
@@ -233,5 +266,6 @@ module.exports = {
     loadGroups,
     createGroup,
     getMembers,
-    addMembers
+    addMembers,
+    updateChatGroup
 }
