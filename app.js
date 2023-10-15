@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const userRoute = require('./routes/userRoute');
 const io = require('socket.io')(http);
+const cookieParser = require('cookie-parser')
 
 const User = require('./models/userModel');
 const Chat = require('./models/chatModel');
@@ -20,6 +21,7 @@ app.use(express.static('public'));
 app.use(session({
     secret: process.env.SESSION_SECRET
 }))
+app.use(cookieParser());
 
 var usp = io.of('user-namespace');
 
