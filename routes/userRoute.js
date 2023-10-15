@@ -27,5 +27,7 @@ router.post('/save-chat', userController.saveChat);
 router.post('/delete-chat', userController.deleteChat);
 router.post('/update-chat', userController.updateChat);
 
+router.get('/groups', isLogin, userController.loadGroups);
+router.post('/groups', upload.single("image"), userController.createGroup);
 
 module.exports = router
