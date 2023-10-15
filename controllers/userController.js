@@ -2,7 +2,7 @@ const User = require('../models/userModel');
 const Chat = require('../models/chatModel');
 const Group = require('../models/groupModel');
 const Member = require('../models/memberModel');
-
+const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 const registerLoad = async (req,res)=>{
@@ -156,7 +156,36 @@ const createGroup = async(req,res)=>{
 
 const getMembers = async(req,res)=>{      
     try {
-        var users = await User.find({_id: {$nin: [req.session.user._id]}});
+        const group_Id = req.body.group_Id;
+        // var users = await User.find({_id: {$nin: [req.session.user._id]}});
+        var users = await User.aggregate([
+            {
+                $lookup:{
+                    from: "members",
+                    localField: "_id",
+                    foreignField: "userId",
+                    pipeline: [
+                        {
+                            $match:{
+                                $expr:{
+                                    $and:[
+                                        { $eq:[ "$groupId", new mongoose.Types.ObjectId(group_Id)]}
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    as: "member"
+                }
+            },
+            {
+                $match:{
+                    "_id": {
+                        $nin: [new mongoose.Types.ObjectId(req.session.user._id)]
+                    }
+                }
+            }
+        ]);
         res.status(200).send({success: true, data:users})
     } catch (error) {
         res.status(400).send({success: false, msg:error.message});
@@ -173,7 +202,7 @@ const addMembers = async(req,res)=>{
             res.status(200).send({success: false, msg: 'You can not select more than ', limit});
         }else{
             await Member.deleteMany({groupId:group_Id});
-            
+
             var data = [];
             for (let i=0; i<members.length; i++){
                 data.push({
