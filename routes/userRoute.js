@@ -29,10 +29,12 @@ router.post('/update-chat', userController.updateChat);
 
 router.get('/groups', isLogin, userController.loadGroups);
 router.post('/groups', [isLogin, upload.single('image')], userController.createGroup);
+
 router.post('/get-members', isLogin, userController.getMembers);
 router.post('/add-members', isLogin, userController.addMembers);
+
 router.post('/update-chat-group', [isLogin, upload.single('image')],userController.updateChatGroup)
 router.post('/delete-chat-group',isLogin, userController.deleteChatGroup)
-
+router.get('/share-group/:id', userController.shareGroup);
 
 module.exports = router

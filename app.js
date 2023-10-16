@@ -71,9 +71,9 @@ mongoose.connect(process.env.mongoURI)
     .then(()=>{console.log("MongoDB Connected!");});
 
 app.use('/',userRoute);
-app.use('*', (req,res)=>{
-    res.redirect('/');
-})
+// app.use('*', (req,res)=>{
+//     res.redirect('/');
+// })
 http.listen(3000, ()=>{
     console.log('Server starting on port : 3000');
 })
