@@ -38,5 +38,6 @@ router.post('/delete-chat-group',isLogin, userController.deleteChatGroup)
 router.get('/share-group/:id', userController.shareGroup);
 router.post('/join-group', isLogin, userController.joinGroup);
 router.get('/group-chat', isLogin, userController.groupChats);
+router.post('/group-chat-save', isLogin, userController.saveGroupChat);
 
 module.exports = router

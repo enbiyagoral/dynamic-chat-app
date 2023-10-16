@@ -46,6 +46,11 @@ usp.on('connection', async function(socket){
     socket.on('newChat', function(data){
         socket.broadcast.emit('loadNewChat', data);
     })
+
+    // chatting group implementation
+    socket.on('newGroupChat', function(data){
+        socket.broadcast.emit('loadNewGroupChat', data);
+    })
     // Load old chats
     socket.on('existsChat', async function(data){
         const chats = await Chat.find({ $or:[
