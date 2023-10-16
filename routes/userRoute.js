@@ -36,5 +36,6 @@ router.post('/add-members', isLogin, userController.addMembers);
 router.post('/update-chat-group', [isLogin, upload.single('image')],userController.updateChatGroup)
 router.post('/delete-chat-group',isLogin, userController.deleteChatGroup)
 router.get('/share-group/:id', userController.shareGroup);
+router.post('/join-group', isLogin, userController.joinGroup);
 
 module.exports = router
