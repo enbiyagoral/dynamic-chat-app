@@ -16,7 +16,7 @@ const upload = multer({storage: storage})
 const { isLogin, isLogout} = require('../middlewares/auth');
 
 router.get('/register', isLogout, userController.registerLoad)
-router.post('/register', upload.single("image"), userController.register)
+router.post('/register', [isLogin, upload.single('image')], userController.register)
 
 router.get('/', isLogout ,userController.loadLogin);
 router.post('/', userController.login);
@@ -28,10 +28,11 @@ router.post('/delete-chat', userController.deleteChat);
 router.post('/update-chat', userController.updateChat);
 
 router.get('/groups', isLogin, userController.loadGroups);
-router.post('/groups', upload.single("image"), userController.createGroup);
+router.post('/groups', [isLogin, upload.single('image')], userController.createGroup);
 router.post('/get-members', isLogin, userController.getMembers);
 router.post('/add-members', isLogin, userController.addMembers);
-router.post('/update-chat-group', upload.single('image'),userController.updateChatGroup)
+router.post('/update-chat-group', [isLogin, upload.single('image')],userController.updateChatGroup)
+router.post('/delete-chat-group',isLogin, userController.deleteChatGroup)
 
 
 module.exports = router
