@@ -332,7 +332,15 @@ const saveGroupChat = async (req,res)=>{
     }
 };
 
-
+const loadGroupChats = async (req,res)=>{
+    try {
+        const { groupId } = req.body;
+        const groupChats = await GroupChat.find({groupId});
+        res.send({success:true, chats: groupChats})
+    } catch (error) {
+        res.status(400).send({success: false, msg:error.message});
+    }
+};
 
 module.exports = {
     register,
@@ -353,5 +361,6 @@ module.exports = {
     shareGroup,
     joinGroup,
     groupChats,
-    saveGroupChat
+    saveGroupChat,
+    loadGroupChats
 }

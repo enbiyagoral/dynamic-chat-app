@@ -39,5 +39,6 @@ router.get('/share-group/:id', userController.shareGroup);
 router.post('/join-group', isLogin, userController.joinGroup);
 router.get('/group-chat', isLogin, userController.groupChats);
 router.post('/group-chat-save', isLogin, userController.saveGroupChat);
+router.post('/load-group-chats',isLogin, userController.loadGroupChats);
 
 module.exports = router
