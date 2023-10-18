@@ -42,4 +42,28 @@
     </div>
 </div>
 
+<div class="modal fade" id="deleteGroupChatModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Delete Chat</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form id="delete-group-chat-form">
+      <div class="modal-body">
+        <input type="hidden" name="id" id="delete-group-message-id">
+        <p>Are you sure want to delete below Message?</p>
+        <p><b id="delete-group-message"></b></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-danger">Delete</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+
 <%- include('layouts/footer.ejs') %>

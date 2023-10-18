@@ -50,7 +50,14 @@ usp.on('connection', async function(socket){
     // chatting group implementation
     socket.on('newGroupChat', function(data){
         socket.broadcast.emit('loadNewGroupChat', data);
-    })
+    });
+
+    socket.on('groupChatDeleted', function(data){
+        console.log("groupChatDeleted");
+
+        socket.broadcast.emit('groupChatMessageDeleted', data);
+    });
+
     // Load old chats
     socket.on('existsChat', async function(data){
         const chats = await Chat.find({ $or:[

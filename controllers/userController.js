@@ -194,7 +194,6 @@ const getMembers = async(req,res)=>{
 const addMembers = async(req,res)=>{
     try {
         var {members, limit, group_Id} = req.body;
-        console.log(members);
         if(members === undefined){
             res.status(200).send({success: false, msg: 'Please select any one Member'});
         }else if(members.length> parseInt(limit)){
@@ -256,7 +255,6 @@ const updateChatGroup = async(req,res)=>{
 const deleteChatGroup = async(req,res)=>{
     try {
         const { groupId } = req.body;
-        console.log(groupId);
 
         await Group.deleteOne({_id:groupId});
         await Member.deleteMany({groupId});
@@ -292,7 +290,6 @@ const shareGroup = async(req,res)=>{
 const joinGroup = async(req,res)=>{
     try {
         const {groupId} = req.body;
-        console.log(groupId);
         const member = new Member({
             groupId,
             userId: req.session.user._id
@@ -342,6 +339,16 @@ const loadGroupChats = async (req,res)=>{
     }
 };
 
+const deleteChatGroupMessage = async(req,res)=>{
+    try {
+        const { id } = req.body;
+        await GroupChat.deleteOne({_id:id});
+        res.send({success:true, msg: 'Chat deleted'})
+    } catch (error) {
+        res.status(400).send({success: false, msg:error.message});
+    }
+};
+
 module.exports = {
     register,
     registerLoad,
@@ -362,5 +369,6 @@ module.exports = {
     joinGroup,
     groupChats,
     saveGroupChat,
-    loadGroupChats
+    loadGroupChats,
+    deleteChatGroupMessage
 }
