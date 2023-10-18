@@ -1,3 +1,7 @@
 /node_modules
-/public
+/public/css
+/public/images
+/public/images/js/popper.js
+/public/images/js/bootstrap.min.js
+/public/images/js/jquery.min.js
 .env

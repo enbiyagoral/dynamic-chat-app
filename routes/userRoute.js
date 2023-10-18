@@ -41,6 +41,7 @@ router.get('/group-chat', isLogin, userController.groupChats);
 router.post('/group-chat-save', isLogin, userController.saveGroupChat);
 router.post('/load-group-chats',isLogin, userController.loadGroupChats);
 router.post('/delete-group-chat',isLogin, userController.deleteChatGroupMessage);
+router.post('/update-group-chat',isLogin, userController.updateGroupChat);
 
 
 

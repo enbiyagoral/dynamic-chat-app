@@ -53,8 +53,6 @@ usp.on('connection', async function(socket){
     });
 
     socket.on('groupChatDeleted', function(data){
-        console.log("groupChatDeleted");
-
         socket.broadcast.emit('groupChatMessageDeleted', data);
     });
 
@@ -75,6 +73,10 @@ usp.on('connection', async function(socket){
 
     socket.on('chatUpdated', function(data){
         socket.broadcast.emit('chatMessageUpdated',data);
+    });
+
+    socket.on('groupChatUpdated', function(data){
+        socket.broadcast.emit('groupChatMessageUpdated',data);
     })
 
 })
