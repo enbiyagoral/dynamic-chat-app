@@ -323,7 +323,9 @@ const saveGroupChat = async (req,res)=>{
         });
 
         var newChat = await chat.save();
-        res.send({success:true, chat:newChat})
+
+        var cChat = await GroupChat.find({_id: newChat._id}).populate('senderId');
+        res.send({success:true, chat:cChat})
     } catch (error) {
         res.status(400).send({success: false, msg:error.message});
     }
@@ -332,7 +334,7 @@ const saveGroupChat = async (req,res)=>{
 const loadGroupChats = async (req,res)=>{
     try {
         const { groupId } = req.body;
-        const groupChats = await GroupChat.find({groupId});
+        const groupChats = await GroupChat.find({groupId}).populate('senderId');
         res.send({success:true, chats: groupChats})
     } catch (error) {
         res.status(400).send({success: false, msg:error.message});

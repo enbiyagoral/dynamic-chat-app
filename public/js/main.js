@@ -388,20 +388,30 @@ $("#group-chat-form").submit(function(e){
 		data: {  senderId, groupId:globalGroupId, message},
 		success: function(response){
 			if(response.success){
-				
-				let message = response.chat.message;
+				console.log(response);
+				let message = response.chat[0].message;
 				let html = `
-				<div class="current-user-chat" id="${response.chat._id}">
+				<div class="current-user-chat" id="${response.chat[0]._id}">
 					<h5>
 						<span>${message}</span>
-						<i class="fa fa-trash deleteGroupChat" aria-hidden="true" data-id='${response.chat._id}' data-toggle="modal" data-target="#deleteGroupChatModal"></i>
+						<i class="fa fa-trash deleteGroupChat" aria-hidden="true" data-id='${response.chat[0]._id}' data-toggle="modal" data-target="#deleteGroupChatModal"></i>
 						<i class="fa fa-edit editGroupChat" aria-hidden="true" 
-						data-id='${response.chat._id}' 
+						data-id='${response.chat[0]._id}' 
 						data-msg="${message}" 
 						data-toggle="modal" 
 						data-target="#editChatGroupModal"></i>
-					</h5>    
-				</div>`;
+					</h5>`;
+					
+					var date = new Date(response.chat[0].createdAt)
+					let cDate = date.getDate();
+					let cMonth = (date.getMonth()+1)>9 ? (date.getMonth()+1):'0'+(date.getMonth()+1);
+					let cYear = date.getFullYear();
+					let getFullDate = cDate + '-' + cMonth + '-' + cYear;
+
+					html += `
+						<div class="user-data"><b>Me</b>${getFullDate}</div>
+					</div>`;
+
 				$('#group-chat-container').append(html);   
 				socket.emit('newGroupChat',response.chat);
 				scrollGroupChat();
@@ -423,7 +433,22 @@ socket.on('loadNewGroupChat',function(data){
 			<div class="distance-user-chat" id="${data._id}">
 				<h5>
 					<span>${data.message}</span>
-				</h5>    
+				</h5> `;
+				var date = new Date(data.createdAt)
+				let cDate = date.getDate();
+				let cMonth = (date.getMonth()+1)>9 ? (date.getMonth()+1):'0'+(date.getMonth()+1);
+				let cYear = date.getFullYear();
+				let getFullDate = cDate + '-' + cMonth + '-' + cYear;
+
+				html +=
+				
+
+			html +=`
+				<div class="user-data">
+					<img src="${data.senderId.image}" class="user-chat-image"/>
+					<b> ${data.senderId.name} </b>
+					${getFullDate}
+				</div>
 			</div>`;
 			$('#group-chat-container').append(html);  
 			scrollGroupChat(); 
@@ -440,10 +465,11 @@ function loadGroupChats(){
 			if(res.success){
 				var chats = res.chats;
 				var html = '';
+				console.log(res);
 
 				for(let i=0; i<chats.length; i++){
 					let className = 'distance-user-chat';
-					if(chats[i].senderId == senderId){
+					if(chats[i].senderId._id == senderId){
 						className = 'current-user-chat';
 					}
 
@@ -452,26 +478,47 @@ function loadGroupChats(){
 						<h5>
 							<span>${chats[i].message}</span>`;
 
-					if(chats[i].senderId == senderId){
+					if(chats[i].senderId._id == senderId){
 						html += `<i class="fa fa-trash deleteGroupChat" aria-hidden="true" 
 						data-id='${chats[i]._id}'
-						data-toggle="modal" 
-						data-target="#deleteGroupChatModal"></i>
+						data-toggle="modal" data-target="#deleteGroupChatModal"></i>
 						<i class="fa fa-edit editGroupChat" aria-hidden="true" 
-						data-id='${chats[i]._id}' 
-						data-msg="${chats[i].message}" 
-						data-toggle="modal" 
-						data-target="#editChatGroupModal"></i>
-						
+						data-id='${chats[i]._id}' data-msg="${chats[i].message}" 
+						data-toggle="modal" data-target="#editChatGroupModal"></i>	
 						`;
 					};
+					
 					html += `
-						</h5>
-					</div>
-					`};
+					</h5>`;
+
+					var date = new Date(chats[i].createdAt)
+					let cDate = date.getDate();
+					let cMonth = (date.getMonth()+1)>9 ? (date.getMonth()+1):'0'+(date.getMonth()+1);
+					let cYear = date.getFullYear();
+					let getFullDate = cDate + '-' + cMonth + '-' + cYear;
+
+					if(chats[i].senderId._id == senderId){
+						html += `
+							<div class="user-data"><b>Me</b>${getFullDate}</div>
+						`
+					}else{
+						html +=`
+						<div class="user-data">
+						<img src="${chats[i].senderId.image}" class="user-chat-image"/>
+						<b> ${chats[i].senderId.name} </b>
+						${getFullDate}
+						</div>
+						`
+					}
+
+					html += `
+					</div>`;
+
+					
 
 				$('#group-chat-container').html(html);
 				scrollGroupChat();
+				}
 
 			}else{
 				alert(res.msg);
