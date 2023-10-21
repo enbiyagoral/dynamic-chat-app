@@ -6,6 +6,9 @@ const http = require('http').Server(app);
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const userRoute = require('./routes/userRoute');
+const chatRoute = require('./routes/chatRoute');
+const groupRoute = require('./routes/groupRoute');
+
 const io = require('socket.io')(http);
 const cookieParser = require('cookie-parser')
 
@@ -22,6 +25,10 @@ app.use(session({
     secret: process.env.SESSION_SECRET
 }))
 app.use(cookieParser());
+
+
+mongoose.connect(process.env.mongoURI)
+    .then(()=>{console.log("MongoDB Connected!");});
 
 var usp = io.of('user-namespace');
 
@@ -81,13 +88,14 @@ usp.on('connection', async function(socket){
 
 })
 
-mongoose.connect(process.env.mongoURI)
-    .then(()=>{console.log("MongoDB Connected!");});
-
+app.use('/chats',chatRoute);
+app.use('/groups',groupRoute);
 app.use('/',userRoute);
-// app.use('*', (req,res)=>{
-//     res.redirect('/');
-// })
+
+
+app.use('*', (req,res)=>{
+    res.redirect('/');
+})
 http.listen(3000, ()=>{
     console.log('Server starting on port : 3000');
 })

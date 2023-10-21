@@ -69,7 +69,7 @@ $("#chat-form").submit(function(e){
 	e.preventDefault();
 	var message = $('#message').val();
 	$.ajax({
-		url: '/save-chat',
+		url: '/chats/save-chat',
 		type: 'POST',
 		data: {  senderId: senderId, receiverId: receiverId, message: message },
 		success: function(response){
@@ -169,7 +169,7 @@ $('#delete-chat-form').submit(function(event){
 	var id = $('#delete-message-id').val();
 
 	$.ajax({
-		url: '/delete-chat',
+		url: '/chats/delete-chat',
 		type: 'POST',
 		data: {id},
 		success: function(res){
@@ -198,7 +198,7 @@ $('#update-chat-form').submit(function(event){
 	var id = $('#edit-message-id').val();
 	var msg = $('#update-message').val();
 	$.ajax({
-		url: '/update-chat',
+		url: '/chats/update-chat',
 		type: 'POST',
 		data: {id: id,message: msg},
 		success: function(res){
@@ -226,7 +226,7 @@ $('.addMember').click(function(){
 	$('#group_Id').val(id);
 	$('#limit').val(limit);
 	$.ajax({
-		url: '/get-members',
+		url: '/groups/get-members',
 		type: 'POST',
 		data: { group_Id: id},
 		success: function(res){
@@ -261,7 +261,7 @@ $('#add-member-form').submit(function(e){
 	var formData = $(this).serialize();
 
 	$.ajax({
-		url : '/add-members',
+		url : '/groups/add-members',
 		type: 'POST',
 		data : formData,
 		success: function(res){
@@ -293,7 +293,7 @@ $('.updateMember').click(function(){
 $('#updateChatGroupForm').submit(function(e){
 	e.preventDefault();
 	$.ajax({
-		url: "/update-chat-group",
+		url: "/groups/update-chat-group",
 		type: "POST",
 		data: new FormData(this),
 		contentType: false,
@@ -318,7 +318,7 @@ $('#deleteChatGroupForm').submit(function(e){
 	e.preventDefault();
 	var formData = $(this).serialize();
 	$.ajax({
-		url: '/delete-chat-group',
+		url: '/groups/delete-chat-group',
 		type: 'POST',
 		data : formData,
 		success: function(res){
@@ -352,7 +352,7 @@ $('.join-now').click(function(){
 	$(this).attr('disabled','disabled')
 	const groupId = $(this).attr('data-id');
 	$.ajax({
-		url: "/join-group",
+		url: "/groups/join-group",
 		type: "POST",
 		data: { groupId },
 		success: function(res){
@@ -383,7 +383,7 @@ $("#group-chat-form").submit(function(e){
 	e.preventDefault();
 	var message = $('#group-message').val();
 	$.ajax({
-		url: '/group-chat-save',
+		url: '/groups/group-chat-save',
 		type: 'POST',
 		data: {  senderId, groupId:globalGroupId, message},
 		success: function(response){
@@ -445,7 +445,7 @@ socket.on('loadNewGroupChat',function(data){
 
 			html +=`
 				<div class="user-data">
-					<img src="${data.senderId.image}" class="user-chat-image"/>
+					<img src="/${data.senderId.image}" class="user-chat-image"/>
 					<b> ${data.senderId.name} </b>
 					${getFullDate}
 				</div>
@@ -458,7 +458,7 @@ socket.on('loadNewGroupChat',function(data){
 
 function loadGroupChats(){
 	$.ajax({
-		url: "/load-group-chats",
+		url: "/groups/load-group-chats",
 		type: "POST",
 		data: { groupId:globalGroupId },
 		success: function(res){
@@ -504,7 +504,7 @@ function loadGroupChats(){
 					}else{
 						html +=`
 						<div class="user-data">
-						<img src="${chats[i].senderId.image}" class="user-chat-image"/>
+						<img src="/${chats[i].senderId.image}" class="user-chat-image"/>
 						<b> ${chats[i].senderId.name} </b>
 						${getFullDate}
 						</div>
@@ -539,7 +539,7 @@ $('#delete-group-chat-form').submit(function(e){
 	e.preventDefault();
 	var id = $('#delete-group-message-id').val();
 	$.ajax({
-		url : '/delete-group-chat',
+		url : '/groups/delete-group-chat',
 		type : 'POST',
 		data : {id},
 		success : function(res){
@@ -575,7 +575,7 @@ $('#update-group-chat-form').submit(function(e){
 	var message = $("#update-group-message").val();
 	console.log(message,id);
 	$.ajax({
-		url : '/update-group-chat',
+		url : '/groups/update-group-chat',
 		type: 'POST',
 		data: {id,message},
 		success: function(res){
